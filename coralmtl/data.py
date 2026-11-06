@@ -88,9 +88,7 @@ class CoralDataset(BaseDataset):
         )
 
         row = self.label_map[img_stem]
-        target_fd_scaled = (
-            float(row.get("FD_Variation", row.get("fractal_dimension", 0))) - 2.0
-        ) * 100.0
+        target_fd = float(row.get("FD_Variation", row.get("fractal_dimension", 0)))
         t_curve = torch.tensor([float(row[c]) for c in CURVE_COLS], dtype=torch.float32)
         valid = 1.0 if float(row.get("R_Squared", 1.0)) >= 0.9 else 0.0
         t_valid = torch.full((4,), valid, dtype=torch.float32)
@@ -117,7 +115,7 @@ class CoralDataset(BaseDataset):
             mask,
             dem_tensor,
             normal_tensor,
-            torch.tensor(target_fd_scaled, dtype=torch.float32),
+            torch.tensor(target_fd, dtype=torch.float32),
             t_curve,
             t_valid,
         )

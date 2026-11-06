@@ -92,7 +92,7 @@ def run_epoch(
             ru_preds.extend(ru_pred.cpu().tolist())
 
             p_fd = predict_fd_from_curve(pred_fd_map, log_l_device)
-            fd_gts.extend(((gt_fd / 100.0) + 2.0).cpu().tolist())
+            fd_gts.extend(gt_fd.cpu().tolist())
             fd_preds.extend(p_fd.cpu().tolist())
 
     if is_train and scheduler:

@@ -31,17 +31,8 @@ class DifferentiableFDSlopeLoss(nn.Module):
         super().__init__()
         self.register_buffer("log_l", log_l_x)
 
-    def forward(self, pred_map, gt_fd_scaled):
-        pred_curve = torch.mean(pred_map, dim=(2, 3))
-        x = self.log_l
-        y = pred_curve
-        x_mean = x.mean()
-        y_mean = y.mean(dim=1, keepdim=True)
-        numerator = torch.sum((y - y_mean) * (x - x_mean), dim=1)
-        denominator = torch.sum((x - x_mean) ** 2)
-        pred_slope = numerator / (denominator + 1e-8)
-        pred_fd_scaled = (1.0 - pred_slope) * 100.0
-        return F.smooth_l1_loss(pred_fd_scaled, gt_fd_scaled)
+    def forward(self, pred_map, gt_fd):
+        return F.smooth_l1_loss(predict_fd_from_curve(pred_map, self.log_l), gt_fd)
 
 
 class SurfaceNormalLoss(nn.Module):
